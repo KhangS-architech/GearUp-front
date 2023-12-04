@@ -116,7 +116,7 @@ export default function ProductReviews({product}) {
               <p>Chưa có đánh giá nào :(</p>
             )}
             {reviews.length > 0 && reviews.map(review => (
-              <ReviewWrapper>
+              <ReviewWrapper key={review._id}>
                 <ReviewHeader>
                   <StarsRating size={'sm'} disabled={true} defaultHowMany={review.stars} />
                   <time>{(new Date(review.createdAt)).toLocaleString('vi-VN')}</time>
