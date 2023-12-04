@@ -111,7 +111,7 @@ export default function AccountPage() {
                                         <p>Đăng nhập để thấy đơn hàng</p>
                                     )}
                                     {orders.length > 0 && orders.map(o => (
-                                        <SingleOrder {...o}/>
+                                        <SingleOrder key={o._id} {...o}/>
                                     ))}
                                 </div>
                              )}

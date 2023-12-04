@@ -48,13 +48,13 @@ export default function CategoriesPage({mainCategories,categoriesProducts,wished
             <Header/>
             <Center>
                 {mainCategories.map(cat => (
-                    <CategoryWrapper>
+                    <CategoryWrapper key={cat._id}>
                         <CategoryTitle>
                             <h2>{cat.name}</h2>
                         </CategoryTitle>
                         <CategoryGrid>
                             {categoriesProducts[cat._id].map(p => (
-                                <ProductBox {...p} wished={wishedProducts.includes(p._id)}/>
+                                <ProductBox key={p._id} {...p} wished={wishedProducts.includes(p._id)}/>
                             ))}
                             <ShowAll href={'/category/'+cat._id}>
                                 Hiển thị tất cả &rarr;
