@@ -48,14 +48,14 @@ export default function ProductImages({ images }) {
   `;
 
   const LeftArrow = styled(ArrowButton)`
-    margin-bottom: 70px;
+    margin-bottom: 350px;
     left: 10px; 
     
   `;
 
   const RightArrow = styled(ArrowButton)`
     margin-left: 300px; 
-    margin-bottom: 70px;
+    margin-bottom: 350px;
   `;
 
  
