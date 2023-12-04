@@ -46,10 +46,13 @@ const Filter = styled.div`
 
 
 export default function CategoryPage({category,subCategories,products:originalProducts,wishedProducts=[]}) {
+    const defaultSorting = '_id-desc';
+    const defaultFilterValues = category.properties.map(p => ({name:p.name,value:'all'}));
     const [products,setProducts] = useState(originalProducts)
-    const [filtersValues, setFiltersValues] = useState(category.properties.map(p => ({name: p.name, value:'all'})))
-    const [sort, setSort] = useState('price_desc')
+    const [filtersValues,setFiltersValues] = useState(defaultFilterValues)
+    const [sort,setSort] = useState(defaultSorting)
     const [loadingProducts, setLoadingProducts] = useState(false)
+    const [filtersChanged,setFiltersChanged] = useState(false)
     function handleFilterChange(filterName, filterValue) {
         setFiltersValues(prev => {
             return prev.map(p => ({
@@ -57,27 +60,29 @@ export default function CategoryPage({category,subCategories,products:originalPr
                 value: p.name === filterName ? filterValue : p.value,
             }))
         })
+        setFiltersChanged(true)
     }
-    useEffect(() => {
-        setLoadingProducts(true)
-        const catIds = [category._id, ...(subCategories?.map(c => c._id) || [])]
-        const params = new URLSearchParams
-        params.set('categories',catIds.join(','))
-        params.set('sort', sort)
-        filtersValues.forEach(f => {
-            if (f.value !== 'all') {
-                params.set(f.name, f.value)
-            }         
-        });
-        const url = `/api/products?` + params.toString()
-        axios.get(url).then(res => {
-            setProducts(res.data)
-            setTimeout(() => {
-                setLoadingProducts(false)
-            },500)
-        })
 
-    }, [filtersValues,sort])
+    useEffect(() => {
+        if (!filtersChanged) {
+          return;
+        }
+        setLoadingProducts(true);
+        const catIds = [category._id, ...(subCategories?.map(c => c._id) || [])];
+        const params = new URLSearchParams;
+        params.set('categories', catIds.join(','));
+        params.set('sort', sort);
+        filtersValues.forEach(f => {
+          if (f.value !== 'all') {
+            params.set(f.name, f.value);
+          }
+        });
+        const url = `/api/products?` + params.toString();
+        axios.get(url).then(res => {
+          setProducts(res.data);
+          setLoadingProducts(false);
+        })
+      }, [filtersValues, sort, filtersChanged]);
     
     return (
         <>
@@ -102,9 +107,12 @@ export default function CategoryPage({category,subCategories,products:originalPr
                     ))}
                     <Filter>
                         <span>Xếp theo:</span>
-                        <select value={sort} onChange={ev => setSort(ev.target.value)}>
-                            <option value="price_asc">Giá, thấp nhất</option>
-                            <option value="price_desc">Giá, cao nhất</option>
+                        <select value={sort} onChange={ev => {setSort(ev.target.value)
+                                                            setFiltersChanged(true)}}>
+                            <option value="price-asc">Giá, thấp nhất</option>
+                            <option value="price-desc">Giá, cao nhất</option>
+                            <option value="_id-desc">Mới nhất</option>
+                            <option value="_id-asc">Cũ nhất</option>
                         </select>
                     </Filter>
                 </FiltersWrapper>
