@@ -82,6 +82,12 @@ export default function CartPage() {
     const [address, setAddress] = useState('')
     const [shippingFee, setShippingFee] = useState(null)
     const [isSuccess, setIsSuccess] = useState(false)
+    const [errors, setErrors] = useState({
+        name: false,
+        email: false,
+        phoneNumber: false,
+        address: false,
+      })
     useEffect(() => {
         if(cartProducts.length > 0) {
             axios.post('/api/cart', {ids:cartProducts})
@@ -132,6 +138,17 @@ export default function CartPage() {
     
 
     async function goToPayment() {
+        let formErrors = {
+            name: !name,
+            email: !email,
+            phoneNumber: !phoneNumber,
+            address: !address,
+          }
+        setErrors(formErrors)
+        if (Object.values(formErrors).some((error) => error)) {
+            // Nếu có lỗi, không thực hiện thanh toán
+            return
+          }
         const response = await axios.post('/api/checkout', {
             name, email, phoneNumber, address,
             cartProducts,
@@ -226,6 +243,7 @@ export default function CartPage() {
                         <Input type="text" placeholder="Email" value={email} name="email" onChange={ev=>setEmail(ev.target.value)}/>
                         <Input type="text" placeholder="Số điện thoại" value={phoneNumber} name="phoneNumber" onChange={ev=>setPhoneNumber(ev.target.value)}/>
                         <Input type="text" placeholder="Địa chỉ nhận hàng" value={address} name="address" onChange={ev=>setAddress(ev.target.value)}/>
+                        {errors.name && <span style={{ color: 'red' }}>Không được để trống thông tin</span>}
                         <Button black block onClick={goToPayment}>Thanh toán</Button>
                        
                     </Box>

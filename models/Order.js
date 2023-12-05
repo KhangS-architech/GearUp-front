@@ -3,10 +3,10 @@ import { Schema, model, models } from "mongoose";
 const OrderSchema = new Schema({
     userEmail: String,
     line_items: Object,
-    name: String,
-    email: String,
-    phoneNumber: String,
-    address: String,
+    name: {type: String, required:true},
+    email: {type: String, required:true},
+    phoneNumber: {type: String, required:true},
+    address: {type: String, required:true},
     paid: Boolean,
 }, {
     timestamps: true,
